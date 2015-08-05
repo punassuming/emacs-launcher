@@ -46,11 +46,7 @@ loop, %0% {
   else if (param == "--eq")
     suffix=-e "(balance-windows)"
   else {
-    ;; if not a path, append to prefix string
-    if not FileExist(param) {
-      prefix = %prefix% %param%
-    }
-    else {
+    if FileExist(param) {
       ; MsgBox %param% exists as a file
       ;; if path not specified
       if RegExMatch(param, "\\") == 0
@@ -64,6 +60,9 @@ loop, %0% {
       files=%files% \"%param%\"
       command=%command% %func% -e "(find-file \"%param%\")"
     }
+    ;; if not a path, append to prefix string
+    else 
+      prefix = %prefix% %param%
   }
 }
 
@@ -77,36 +76,40 @@ NewPID = %ErrorLevel%  ; Save the value immediately since ErrorLevel is often ch
 
 ; if emacs is not running, why does server file exist?
 EnvGet, HOME, USERPROFILE
+
+; -f "%repodir%\files-%USERDOMAIN%-%USERNAME%\server"
 server_path = %HOME%\.emacs.d\server
 
 ; If emacs.exe isn't running...
 if (NewPID == 0) {
-Loop, %server_path%\* {
-  MsgBox, 4, , Delete old server files?
-  IfMsgBox Yes
-    FileDelete, %server_path%\*
-}
-Tooltip, Starting Emacs...
-Run %emacs_path%%client% -n -c -a %emacs_path%%server%
-WinWait, ahk_class Emacs
-
-; Continuous
-started=
-Loop {
   Loop, %server_path%\* {
-    If FileExist(A_LoopFileLongPath)
-      started=1
+    MsgBox, 4, , Delete old server files?
+    ; IfMsgBox Yes
+    FileDelete, %server_path%\*
   }
-  If (started)
-    break
+  Tooltip, Starting Emacs...
+  Run %emacs_path%%client% -n -c -a %emacs_path%%server%
+  WinWait, ahk_class Emacs
+
+  ; Continuous
+  started=
+  Loop {
+    Loop, %server_path%\* {
+      If FileExist(A_LoopFileLongPath)
+        started=1
+    }
+    If (started)
+      break
   Sleep, 1000
 }
 }
 
+; clear tooltip
 Tooltip
 
+; create new window if one doesn't exist
 if not WinExist("ahk_class Emacs")
-  prefix = -c
+  prefix = -c %prefix%
 
 ; If no command line arguments, just bring window to front, or create new window
 If (filecount = 0) {
@@ -115,8 +118,8 @@ If (filecount = 0) {
   Else
     Run %emacs_path%%client% -n %prefix%
 
-    WinWait, ahk_class Emacs
-    ExitApp
+  WinWait, ahk_class Emacs
+  ExitApp
 }
 
 ; If filecount = 1
@@ -154,7 +157,7 @@ Help:
   message =
   (LTrim0
 Arguments:
-  -f  or  --nofork Foreground: Don't fork when starting GUI
+  -f  Create a new frame
   -d  or  --diff Diff mode (like 'ediff')
   -C   Don't load .emacs.d
   -f   Create new frame
