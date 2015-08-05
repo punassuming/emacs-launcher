@@ -9,12 +9,27 @@ func=
 prefix=
 suffix=
 mode=
+emacs_path=
 
-EnvGet, emacs_path, EmacsPath
+
+EnvGet, bin_path, Path
+
+Loop, Parse, bin_path, `;
+{
+  If FileExist(A_LoopField . "\emacs.exe")
+    {
+    emacs_path = %A_LoopField%
+    Break
+  }
+}
 
 If (emacs_path=) {
-  MsgBox Set environment variable "EmacsPath" to root directory of your emacs installation
-  ExitApp
+  EnvGet, emacs_path, EmacsPath
+
+  If (emacs_path=) {
+    MsgBox Set environment variable "EmacsPath" to root directory of your emacs installation, or add emacs binary directory to "PATH"
+    ExitApp
+  }
 }
 
 client=\bin\emacsclientw.exe
