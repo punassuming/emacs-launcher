@@ -46,6 +46,7 @@ loop, %0% {
   param := %A_Index%
   arglist.=param
   ; MsgBox % param
+  ; MsgBox % RegexMatch(param, "[*?]")
   if ((param == "--diff") or (param == "-d"))
     mode=ediff-files
   else if (param == "-o")
@@ -59,8 +60,22 @@ loop, %0% {
   else if (param == "--eq")
     suffix=-e "(balance-windows)"
   else {
-    if FileExist(param) {
-      ; MsgBox %param% exists as a file
+    if (RegexMatch(param, "[*?]")) {
+      Glob(file_list, param)
+      Loop, Parse, file_list, "`n"
+      {
+        ; MsgBox %A_LoopField%
+        If FileExist(A_LoopField) {
+          ;; convert path to unix delimiters
+          param := RegExReplace(A_LoopField, "\\", "/")
+          filecount+=1
+          files=%files% \"%param%\"
+          command=%command% %func% -e "(find-file \"%param%\")"
+        }
+      }
+    }
+    else if FileExist(param) {
+      MsgBox %param% exists as a file
       ;; if path not specified
       if RegExMatch(param, "\\") == 0
         param = %A_WorkingDir%\%param%
@@ -74,8 +89,7 @@ loop, %0% {
       command=%command% %func% -e "(find-file \"%param%\")"
     }
     ;; if not a path, append to prefix string
-    else 
-      prefix = %prefix% %param%
+    else prefix = %prefix% %param%
   }
 }
 
@@ -157,6 +171,7 @@ if (mode) {
 }
 else {
   ; MsgBox "command"
+  ; MsgBox %prefix% %command% %suffix%
   Run %emacs_path%%client% %prefix% %command% %suffix%
 }
 
@@ -169,16 +184,12 @@ Exit:
 Help:
   message =
   (LTrim0
-Arguments:
+ Arguments:
   -f  Create a new frame
   -d  or  --diff Diff mode (like 'ediff')
   -C   Don't load .emacs.d
-  -f   Create new frame
   -D   Debugging mode
-  -B   List Emacs buffers
   --eq Make created windows equal
-  -T <terminal> Open Emacs in shell-mode
-  -f  Open tab pages (default: one for each file)
   -o  Open windows horizontally (default: one for each file)
   -v  Like -o but split vertically
   -e <execute>  <Execute> function after loading the first file
@@ -188,3 +199,16 @@ Arguments:
   MsgBox %message%
   ExitApp
   return
+
+; Subroutine to allow file list by glob
+; http://www.autohotkey.com/board/topic/26846-wildcard-folders/
+
+Glob(ByRef list, Pattern, IncludeDirs=0)
+{
+  if (i:=RegExMatch(Pattern,"[*?]")) && (i:=InStr(Pattern,"\",1,i+1))
+    Loop, % SubStr(Pattern, 1, i-1), 2
+  Glob(list, A_LoopFileLongPath . SubStr(Pattern,i), IncludeDirs)
+  else
+    Loop, %Pattern%, %IncludeDirs%
+    list .= (list="" ? "" : "`n") . A_LoopFileLongPath
+}
