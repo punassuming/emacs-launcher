@@ -1,4 +1,4 @@
-Emacs Manager
+Emacs Launcher
 =============
 
 
@@ -11,7 +11,7 @@ windows.
 Releases
 --------
 
-Compiled versions of the script are found here [https://github.com/ralesi/emacs-manager/releases]
+Compiled versions of the script are found here [https://github.com/ralesi/emacs-launcher/releases]
 
 
 
