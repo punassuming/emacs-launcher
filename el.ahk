@@ -11,7 +11,6 @@ suffix=
 mode=
 emacs_path=
 
-
 EnvGet, bin_path, Path
 
 Loop, Parse, bin_path, `;
@@ -23,14 +22,13 @@ Loop, Parse, bin_path, `;
   }
 }
 
-If (emacs_path=) {
+
   EnvGet, emacs_path, EmacsPath
 
   If (emacs_path=) {
     MsgBox Set environment variable "EmacsPath" to root directory of your emacs installation, or add emacs binary directory to "PATH"
     ExitApp
   }
-}
 
 client=\bin\emacsclientw.exe
 server=\bin\runemacs.exe
@@ -98,7 +96,7 @@ server_path = %HOME%\.emacs.d\server
 ; If emacs.exe isn't running...
 if (NewPID == 0) {
   Loop, %server_path%\* {
-    MsgBox, 4, , Delete old server files?
+    ; MsgBox, 4, , Delete old server files?
     ; IfMsgBox Yes
     FileDelete, %server_path%\*
   }
@@ -115,8 +113,8 @@ if (NewPID == 0) {
     }
     If (started)
       break
-  Sleep, 1000
-}
+    Sleep, 1000
+  }
 }
 
 ; clear tooltip
@@ -128,7 +126,7 @@ if not WinExist("ahk_class Emacs")
 
 ; If no command line arguments, just bring window to front, or create new window
 If (filecount = 0) {
-  if WinExist("ahk_class Emacs")
+  If WinExist("ahk_class Emacs")
     WinActivate, ahk_class Emacs
   Else
     Run %emacs_path%%client% -n %prefix%
