@@ -59,38 +59,38 @@ loop, %0% {
     GoSub, Help
   else if (param == "--eq")
     suffix=-e "(balance-windows)"
+  else if (RegexMatch(param, "^-"))
+    prefix = %prefix% %param%
   else {
+    ;; globbing support
     if (RegexMatch(param, "[*?]")) {
       Glob(file_list, param)
       Loop, Parse, file_list, "`n"
       {
         ; MsgBox %A_LoopField%
         If FileExist(A_LoopField) {
-          ;; convert path to unix delimiters
-          param := RegExReplace(A_LoopField, "\\", "/")
           filecount+=1
-          files=%files% \"%param%\"
-          command=%command% %func% -e "(find-file \"%param%\")"
+          ff := FindFile(A_LoopField)
+          command=%command% %func% -e %ff% 
         }
       }
     }
-    else if FileExist(param) {
-      ; MsgBox %param% exists as a file
-      ;; if path not specified
-      if RegExMatch(param, "\\") == 0
-        param = %A_WorkingDir%\%param%
-      
-      ;; convert path to unix delimiters
-      param := RegExReplace(param, "\\", "/")
-
+    ;; else treat like a file     
+    else {
       filecount+=1
-
-      files=%files% \"%param%\"
-      command=%command% %func% -e "(find-file \"%param%\")"
+      ff := FindFile(param)
+      command=%command% %func% -e %ff% 
     }
-    ;; if not a path, append to prefix string
-    else prefix = %prefix% %param%
   }
+}
+
+if (mode == "ediff-files") {
+  if (filecount < 2) {
+    MsgBox, At least two files are needed to perform a difference
+    ExitApp
+  }
+  else if (filecount > 2)
+    mode=ediff3
 }
 
 ; MsgBox % arglist
@@ -135,36 +135,27 @@ if (NewPID == 0) {
 Tooltip
 
 ; create new window if one doesn't exist
-if not WinExist("ahk_class Emacs")
-  prefix = -c %prefix%
+
+If not WinExist("ahk_class Emacs")
+  Run %emacs_path%%client% -c -n %prefix%
+
+WinWait, ahk_class Emacs
+WinActivate, ahk_class Emacs
+
+; if not WinExist("ahk_class Emacs")
+; prefix = -c %prefix%
 
 ; If no command line arguments, just bring window to front, or create new window
-If (filecount = 0) {
-  If WinExist("ahk_class Emacs")
-    WinActivate, ahk_class Emacs
-  Else
+If (filecount == 0) {
+  If prefix
     Run %emacs_path%%client% -n %prefix%
-
-  WinWait, ahk_class Emacs
   ExitApp
 }
 
-; If filecount = 1
-; {
-;   ; MsgBox, Running Now
-;   Run %emacs_path%%client% -n %prefix% %param%
-;   ExitApp
-; }
+; MsgBox, Got to next point
+; MsgBox %prefix% %command% %suffix%
 
-if (mode == "ediff-files") {
-  if (filecount < 2) {
-    MsgBox, At least two files are needed to perform a difference
-    ExitApp
-  }
-  else if (filecount > 2)
-    mode=ediff3
-}
-
+; Open file or launch mode
 if (mode) {
   ; MsgBox "mode"
   Run %emacs_path%%client% %prefix% -e "(%mode% %files%)"
@@ -175,7 +166,7 @@ else {
   Run %emacs_path%%client% %prefix% %command% %suffix%
 }
 
-WinActivate, ahk_class Emacs
+; WinActivate, ahk_class Emacs
 
 Exit:
   ExitApp
@@ -195,7 +186,8 @@ Help:
   -e <execute>  <Execute> function after loading the first file
   -S <server>  Open in specified Emacs server
   -h  or  --help Print Help (this message) and exit
-  )
+)
+
   MsgBox %message%
   ExitApp
   return
@@ -211,4 +203,17 @@ Glob(ByRef list, Pattern, IncludeDirs=0)
   else
     Loop, %Pattern%, %IncludeDirs%
     list .= (list="" ? "" : "`n") . A_LoopFileLongPath
+}
+
+FindFile(param) {
+  ; MsgBox %param% exists as a file
+  ;; if path not specified
+  if RegExMatch(param, "\\") == 0
+    param = %A_WorkingDir%\%param%
+  
+  ;; convert path to unix delimiters
+  param := RegExReplace(param, "\\", "/")
+
+  command="(find-file \"%param%\")"
+  return % command
 }
