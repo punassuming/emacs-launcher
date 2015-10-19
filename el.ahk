@@ -41,13 +41,20 @@ server=\bin\runemacs.exe
 filecount=0
 arglist=
 command=
+was_eval=
 
 loop, %0% {
   param := %A_Index%
   arglist.=param
   ; MsgBox % param
   ; MsgBox % RegexMatch(param, "[*?]")
-  if ((param == "--diff") or (param == "-d"))
+  if ((param == "--eval") or (param == "-e") or (was_eval)) {
+    if was_eval
+      param = "%param%"
+    suffix=%suffix% %param%
+    was_eval=1
+  }
+  else if ((param == "--diff") or (param == "-d"))
     mode=ediff-files
   else if (param == "-o")
     func=-e "(split-window-vertically)"
@@ -94,7 +101,6 @@ if (mode == "ediff-files") {
 }
 
 ; MsgBox % arglist
-; MsgBox, %prefix% %command% %suffix%
 ; ExitApp
 
 ; MsgBox %0% and filecount is %filecount%
@@ -144,11 +150,12 @@ WinActivate, ahk_class Emacs
 
 ; if not WinExist("ahk_class Emacs")
 ; prefix = -c %prefix%
+; MsgBox, %prefix% %command% %suffix%
 
 ; If no command line arguments, just bring window to front, or create new window
 If (filecount == 0) {
-  If prefix
-    Run %emacs_path%%client% -n %prefix%
+  If (prefix or suffix)
+    Run %emacs_path%%client% -n %prefix% %suffix%
   ExitApp
 }
 
