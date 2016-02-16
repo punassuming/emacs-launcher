@@ -143,7 +143,12 @@ Tooltip
 ; create new window if one doesn't exist
 
 If not WinExist("ahk_class Emacs")
+{
+  If (func=-e "(make-frame)")
+    func=
+
   Run %emacs_path%%client% -c -n %prefix%
+}
 
 WinWait, ahk_class Emacs
 WinActivate, ahk_class Emacs
