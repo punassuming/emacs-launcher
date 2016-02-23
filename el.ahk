@@ -67,14 +67,11 @@ loop, %0% {
     mode=ediff-files
   }
   else if (param == "-o") 
-
-    func=-e "(split-window-vertically)"
-  
+    func=(split-window-vertically)
   else if (param == "-v") 
-
-    func=-e "(split-window-horizontally)"
+    func=(split-window-horizontally)
   else if (param == "-f")
-    func=-e "(make-frame)"
+    func=(select-frame-set-input-focus (make-frame))
   else if ((param == "-h") or (param == "--help"))
     GoSub, Help
   else if (param == "--eq")
@@ -92,9 +89,9 @@ loop, %0% {
           filecount+=1
         ff := FindFile(A_LoopField)
 if (filecount==1)
-command=%command% -e %ff%
+command=%command% %ff%
 else
-        command=%command% %func% -e %ff% 
+        command=%command% %func% %ff% 
         }
       }
     }
@@ -103,9 +100,9 @@ else
       filecount+=1
     ff := FindFile(param)
     if (filecount==1)
-      command=%command% -e %ff%
+      command=%command% %ff%
     else
-      command=%command% %func% -e %ff% 
+      command=%command% %func% %ff% 
     }
   }
 }
@@ -121,7 +118,10 @@ ExitApp
 
 ; if messing with multiple files, make a new frame.
 if (filecount > 1)
-  prefix=%prefix% -e "(make-frame)"
+  command=(select-frame-set-input-focus (make-frame)) %command%
+
+if command!=
+  command=-e "(progn %command%)"
 
 ; MsgBox % arglist
 ; ExitApp
@@ -144,6 +144,7 @@ if (NewPID == 0) {
     FileDelete, %server_path%\*
   }
   Tooltip, Starting Emacs...
+
   
   Run %emacs_path%%client% -n -c -a %emacs_path%%server%
   ; Run cmd.exe /c "set path=%path%;%emacs_path%%client% -n -c -a %emacs_path%%server%"
@@ -166,7 +167,7 @@ if (NewPID == 0) {
 ; clear tooltip
 Tooltip
 
-MsgBox %prefix% %command% %suffix%
+; MsgBox %prefix% %command% %suffix%
 
 ; create new window if one doesn't exist
 If not WinExist("ahk_class Emacs")
@@ -252,6 +253,6 @@ FindFile(param) {
   ;; convert path to unix delimiters
   param := RegExReplace(param, "\\", "/")
 
-  command="(find-file \"%param%\")"
+  command=(find-file \"%param%\")
   return % command
 }
