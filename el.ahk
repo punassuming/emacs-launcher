@@ -11,6 +11,15 @@ suffix=
 mode=
 emacs_path=
 
+/*
+EnvGet, old_path, Original_Path
+If old_path
+{
+
+EnvSet, Path, %old_path%
+EnvSet, Shell, 
+}
+*/
 
 EnvGet, bin_path, Path
 
@@ -50,15 +59,19 @@ loop, %0% {
   ; MsgBox % RegexMatch(param, "[*?]")
   if ((param == "--eval") or (param == "-e") or (was_eval)) {
     if was_eval
-      param = "%param%"
-    suffix=%suffix% %param%
-    was_eval=1
+        param = "%param%"
+      suffix=%suffix% %param%
+      was_eval=1
   }
-  else if ((param == "--diff") or (param == "-d"))
+  else if ((param == "--diff") or (param == "-d")) {
     mode=ediff-files
-  else if (param == "-o")
+  }
+  else if (param == "-o") 
+
     func=-e "(split-window-vertically)"
-  else if (param == "-v")
+  
+  else if (param == "-v") 
+
     func=-e "(split-window-horizontally)"
   else if (param == "-f")
     func=-e "(make-frame)"
@@ -77,15 +90,21 @@ loop, %0% {
         ; MsgBox %A_LoopField%
         If FileExist(A_LoopField) {
           filecount+=1
-          ff := FindFile(A_LoopField)
-          command=%command% %func% -e %ff% 
+        ff := FindFile(A_LoopField)
+if (filecount==1)
+command=%command% -e %ff%
+else
+        command=%command% %func% -e %ff% 
         }
       }
     }
     ;; else treat like a file     
     else {
       filecount+=1
-      ff := FindFile(param)
+    ff := FindFile(param)
+    if (filecount==1)
+      command=%command% -e %ff%
+    else
       command=%command% %func% -e %ff% 
     }
   }
@@ -93,12 +112,16 @@ loop, %0% {
 
 if (mode == "ediff-files") {
   if (filecount < 2) {
-    MsgBox, At least two files are needed to perform a difference
-    ExitApp
+  MsgBox, At least two files are needed to perform a difference
+ExitApp
   }
   else if (filecount > 2)
     mode=ediff3
 }
+
+; if messing with multiple files, make a new frame.
+if (filecount > 1)
+  prefix=%prefix% -e "(make-frame)"
 
 ; MsgBox % arglist
 ; ExitApp
@@ -121,7 +144,10 @@ if (NewPID == 0) {
     FileDelete, %server_path%\*
   }
   Tooltip, Starting Emacs...
+  
   Run %emacs_path%%client% -n -c -a %emacs_path%%server%
+  ; Run cmd.exe /c "set path=%path%;%emacs_path%%client% -n -c -a %emacs_path%%server%"
+
   WinWait, ahk_class Emacs
 
   ; Continuous
@@ -140,8 +166,9 @@ if (NewPID == 0) {
 ; clear tooltip
 Tooltip
 
-; create new window if one doesn't exist
+MsgBox %prefix% %command% %suffix%
 
+; create new window if one doesn't exist
 If not WinExist("ahk_class Emacs")
 {
   If (func=-e "(make-frame)")
@@ -170,11 +197,10 @@ If (filecount == 0) {
 ; Open file or launch mode
 if (mode) {
   ; MsgBox "mode"
-  Run %emacs_path%%client% %prefix% -e "(%mode% %files%)"
+Run %emacs_path%%client% %prefix% -e "(%mode% %files%)"
 }
 else {
   ; MsgBox "command"
-  ; MsgBox %prefix% %command% %suffix%
   Run %emacs_path%%client% %prefix% %command% %suffix%
 }
 
