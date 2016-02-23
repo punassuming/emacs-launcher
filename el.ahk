@@ -117,8 +117,8 @@ ExitApp
 }
 
 ; if messing with multiple files, make a new frame.
-if (filecount > 1)
-  command=(select-frame-set-input-focus (make-frame)) %command%
+; if (filecount > 1)
+;   command=(select-frame-set-input-focus (make-frame)) %command%
 
 if command!=
   command=-e "(progn %command%)"
