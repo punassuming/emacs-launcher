@@ -88,20 +88,20 @@ loop, %0% {
         If FileExist(A_LoopField) {
           filecount+=1
         ff := FindFile(A_LoopField)
-if (filecount==1)
-command=%command% %ff%
-else
-        command=%command% %func% %ff% 
-        }
+          ; if (filecount==1)
+          ;   command=%command% %ff%
+          ; else
+            command=%command% %func% %ff% 
+          }
       }
     }
     ;; else treat like a file     
     else {
       filecount+=1
     ff := FindFile(param)
-    if (filecount==1)
-      command=%command% %ff%
-    else
+    ; if (filecount==1)
+    ;   command=%command% %ff%
+    ; else
       command=%command% %func% %ff% 
     }
   }
