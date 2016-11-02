@@ -1,0 +1,44 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell]
+[HKEY_CLASSES_ROOT\*\shell\openwemacs]
+@="&Edit with Emacs"
+[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
+@="C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3bin\\emacsclientw.exe --alternate-editor=\"C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3bin\\runemacs.exe\" -n \"%1\""
+[HKEY_CLASSES_ROOT\Directory\shell\openwemacs]
+@="Edit &with Emacs"
+[HKEY_CLASSES_ROOT\Directory\shell\openwemacs\command]
+@="C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3bin\\emacsclientw.exe --alternate-editor=\"C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3bin\\runemacs.exe\" -n \"%1\""
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell]
+[HKEY_CLASSES_ROOT\*\shell\openwemacs]
+@="&Edit with Emacs"
+[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
+@="C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3\\bin\\emacsclientw.exe --alternate-editor=\"C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3\\bin\\runemacs.exe\" -n \"%1\""
+[HKEY_CLASSES_ROOT\*\shell\openwemacsdiff]
+@="&Diff with Emacs"
+[HKEY_CLASSES_ROOT\*\shell\openwemacsdiff\command]
+@="C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3\\bin\\emacsclientw.exe --alternate-editor=\"C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3\\bin\\runemacs.exe\" -diff \"%1\" \"%2\""
+[HKEY_CLASSES_ROOT\Directory\shell\openwemacs]
+@="Edit &with Emacs"
+[HKEY_CLASSES_ROOT\Directory\shell\openwemacs\command]
+@="C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3\\bin\\emacsclientw.exe --alternate-editor=\"C:\\Chocolatey\\lib\\Emacs.24.3\\tools\\emacs-24.3\\bin\\runemacs.exe\" -n \"%1\""Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\.]
+@="noext"
+
+[HKEY_CLASSES_ROOT\noext\Shell\Open\Command]
+@="emacs \"%1\""
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\open with emacs\command]
+@="emacs \"%1\""
+ [HKEY_CLASSES_ROOT\*\Shell\Open In Emacs\Command]
+@="\"D:\\Program Files\\Emacs23\\bin\\emacsclientw.exe\" -a \"D:\\Program Files\\Emacs23\\bin\\runemacs.exe\" \"%1\""Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Unknown\shell]
+@="emacs"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Unknown\shell\emacs\command]
+@="emacs \"%1\""

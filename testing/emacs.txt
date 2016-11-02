@@ -1,0 +1,489 @@
+% ---- Buffers -----------------------------------------------------------------
+
+C-x s                       : save current (force if unsaved)
+C-x C-w                     : save as
+C-x C-q                     : toggle read-only
+
+C-x b                       : open buffer
+    C-r/C-s (iswitch)       : next/previous buffer in list
+
+C-x C-b                     : list buffers (mine instead: open buffer)
+C-x k                       : kill buffer
+C-x C-f                     : open/create file
+C-x C-r                     : open file read only
+C-x C-v                     : kill buffer then open file
+C-x C-v RET                 : refresh buffer
+C-x C-c                     : exit (will ask for each file to save, C-h = help)
+
+C-x left                    : switch to previous buffer
+C-x right                   : switch to next buffer
+
+M-x ibuffer                 : operate on multiple buffers, h for help
+M-x make-directory RET      : create path of opened file
+
+M-x recover-file            : recover autosave information
+M-x diff                    : diff files, default: current file and latest bak
+M-x diff-buffer-with-file   : diff current buffer with its file
+
+% To see the autosave info just go to .emacs.d/autosave.
+
+% ---- Moving, Selecting and Deleting ------------------------------------------
+
+M-g M-g : move to line
+M-m     : move to first non blank character
+C-a     : move to begin of line
+C-e     : move to end of line
+M-<     : move to beginning of buffer
+M->     : move to end of buffer
+
+C-b     : move backward one character
+C-f     : move forward one character
+M-b     : move backward one word            (alts: M-left, C-left)
+M-f     : move forward one word             (alts: M-right, C-right)
+C-p     : move backward one line
+C-n     : move forward one line
+C-up    : move backward one paragraph       (mine: M-p)
+C-down  : move forward one paragraph        (mine: M-n)
+pg up   : move backward one screen          (overriden: C-v)
+pg dn   : move backward one screen          (alt: M-v)
+C-M-v   : forward screen other window
+S-C-M-v : backward screen other window
+C-,     : move backward 10 lines            (mine)
+C-;     : move forward 10 lines             (mine)
+
+C-x h   : select all
+C-w     : kill region
+M-w     : copy region
+C-j     : delete region                     (mine)
+C-k     : kill line after point
+C-spc   : set mark
+C-x C-x : invert mark and point
+
+back    : delete char backward
+C-d     : delete char forward               (alt: del)
+M-del   : delete word backward
+M-d     : delete word forward
+
+C-l     : recenter-top-bottom : center view on current line
+
+% ---- Windows and Frames ------------------------------------------------------
+
+C-x 0     : delete window
+C-x 1     : display only one window
+C-x 2     : split window horizontally
+C-x 3     : split window vertically
+
+C-x 4 0   : delete window, kill buffer in it
+C-x 4 C-o : switch buffer in next window
+C-x 4 f   : open/create file in next window
+C-x 4 k   : kill buffer in next window
+
+C-x 5 0   : close frame
+C-x 5 2   : create new frame
+C-x 5 b   : select buffer in a new frame
+C-x 5 f   : open file in a new frame
+C-x 5 r   : open file read-only in a new frame
+C-x 5 o   : switch to other frame
+
+C-x o     : switch to next window
+C-x p     : switch to prev window                       (mine)
+C-x }     : make window wider
+C-x {     : make window less wide
+C-x ^     : make window taller
+C-x y     : make window 80 chars wide                   (mine)
+C-x +     : make all window the same height and width
+C-:       : move buffer left                            (mine)
+C-=       : move buffer right                           (mine)
+
+% ---- Help --------------------------------------------------------------------
+
+C-h i   : emacs infos
+C-h r   : manual ("Emacs" in emacs infos)
+
+basics (chapter 1)
+    n,p,u,t         : next, prev (same level), up, top
+    space           : scroll one page, eventually to next node
+    back            : scroll back one page backward, eventually prev node
+    b               : go to beginning of node
+    ?               : display list of commands
+    [,]             : previous/next node (goes trough the nested levels)
+    m               : menu (use name or number)
+    f               : follow cross reference (inline link)
+    tab             : (after an m,f) auto-completion
+    tab,S-tab       : next, prev line in menu (set of starred lines)
+    l               : previous node in history
+    r               : next node in history
+    L               : list history
+    d               : go to emacs infos (ultimate root)
+    q               : exit
+
+advanced (chapter 2)
+    s               : search manual from here (use C-s/C-r rather)
+    i               : search index for substrings or keybinds (in current man)
+    ,               : next result from the index
+    I               : like i, but display a menu of results
+    1-9             : pick item 1-9 from a menu
+    g               : go to a node by name
+    M-n             : new independent info buffer
+    C-u m/g         : idem m/g but in a new buffer
+    C-u <n> C-h i   : go to the nth info buffer, creating it if necessary
+
+M-x info-apropos    : find info file about topic
+C-h a               : commands whose names match topics
+C-h d               : commands and variables whose documentation matches topics
+C-h p               : find package
+
+C-h b               : active key bindings
+C-h c               : info about key binding (brief, in minibuffer)
+C-h e               : show *Messages*
+C-h m               : describe modes (see shadowed bindings here)
+
+C-h f               : describe lisp function or command
+C-h F               : info node for command
+C-h v               : describe variable
+C-h w               : which keys runs the command ?
+C-h C               : describe coding system
+C-h P               : describe package
+C-h k               : name and documentation of command key (C-h c + C-h f)
+C-h K               : info node for command key
+
+M-x describe-minor-mode
+
+% ---- Shell -------------------------------------------------------------------
+
+M-x shell   : gives an (existing, else new) emacs shell
+M-x nshell  : idem, but spawns a new shell each time                    (mine)
+M-p         : fetch previous command
+M-n         : fetch next command
+C-c C-n     : goto next command output
+C-c C-p     : goto previous command output
+C-l         : clear shell                                               (mine)
+C-c C-c     : kill command
+C-M-l       : show input (= clear if last command had no output)
+C-c r       : resync dirs (for autocompletion)                          (mine)
+
+% ---- Various -----------------------------------------------------------------
+
+C-x z   : repeat last command
+
+C-y     : yank (paste)
+M-y     : after a C-y, change the text by the kill ring previous
+C-w     : kill (cut)
+M-w     : copy
+
+C-g     : cancel command or remove mark
+
+C-z     : suspend (win : minimize)
+C-g     : cancel command
+M-x     : execute text command
+C-h v   : see variable documentation
+C-u number
+
+C-x ret f   : set file coding
+
+M-x desktop-clear  && var : desktop-clear-preserve-buffers-regexp
+
+C-x u   : undo
+  undo-tree visualize
+
+C-z : (c) undo
+C-x C-z : undo-tree-redo
+C-x r u : undo-tree-save-state-to-register
+C-x r U : undo-tree-restore-state-from-register
+
+
+C-x C-+ : augment font size
+C-x C-- : reduce font size
+
+M-x describe-unbound-keys : list unbound keys
+
+C-q <char> : (quoted-insert) insert the char literally (C-j for a newline)
+
+C-x n n : makes everything but the region invisible and untouchable
+C-x n w : restore hidden content
+
+M-! : execute shell command
+M-& : execute shell command asynchroniously (side-effect: out in a buffer)
+    prefix with C-u: insert output in buffer at point
+M-| : shell command on region (input)
+    prefix with C-u: replace region by output
+
+C-o : insert newline whitout moving cursor
+
+(C-u) M-x : show user (all) variables that match pattern
+
+M-x color-theme-select : select a color-theme
+
+M-x follow-mode : two adjacent window showing the same file will scroll as one
+
+winner-mode:
+    C-c <left>  : redo window layout change
+    C-c <right> : undo latest window layout change
+
+C-x C-o : leave only one empty line between paragraphs
+
+M-x auto-revert-mode : auto-update changed files
+
+M-^ : join two lines (delete indentation)
+M-t : drag word
+
+C-l : compile
+in debugger: q : exit and clears debugger
+
+C-M-n : jump to forward matching paren
+
+C-x C-spc : pop mark
+
+eshell: M-? : pcomplete-list
+
+variable: require-final-newline : set to nil to disable adding a final
+  in current buffer
+
+M-x font-lock-fontify-buffer : recolor buffer
+M-x describe-font : describe current font by default
+
+byte compilation:
+    byte-compile-file
+    byte-recompile-file
+    byte-recompile-directory (with C-u 0, compile files with no .elc)
+
+C-x n w : widen
+C-x n n : narrow to region
+C-x n d : narrow to defun
+
+M-x kill-emacs : quit emacs and exits the daemon
+
+M-x list-package : list elpa package available for install
+
+M-x auto-revert-mode : update buffer when file changes
+
+C-t             transpose-chars (both chars around point)
+C-c <space>     ace-jump-word-mode
+C-u C-c <space>     ace-jump-char-mode
+C-u C-u C-c <space>     ace-jump-line-mode
+
+% ---- Prefix Argument ---------------------------------------------------------
+
+M-<num> <cmd>       : arg of <num>
+M-<num> C-u <num2>  : print <num> times <num2>
+M-- <cmd>           : arg -1 (usually)
+M-- <num> <cmd>     : arg of -<num>
+C-u <cmd>           : arg of 4 (usually)
+
+% ---- Macros ------------------------------------------------------------------
+
+C-x (     : start recording macro (prefix: replay x times)
+C-x )     : end recording macro
+C-x e     : play last macro (prefix: replay x times), then e to repeat
+C-u C-x ( : append to macro (reexecutes the begin)
+
+C-x C-k C-e   : edit macro
+    C-c C-q       : insert command by typing key
+    C-c C-c       : save and exit edit macro
+    C-h m         : more info on edit macro
+
+save macro:
+    TODO seek better method
+    M-x kmacro-name-last-macro <name>
+    M-x insert-kbd-macro <name>
+
+executing a keyboard macros (such as "(kbd "C-y")":
+    (execute-kbd-macro <macro>)
+
+% ---- Rectangles --------------------------------------------------------------
+
+C-x r k : kill region-rectangle
+C-x r y : yank region-rectangle
+C-x r o : insert whitespace in region-rect
+C-x r c : replace region-rect with white-space
+C-x r t <string> : replace region-rect with string on each line
+
+TODO:
+yank rectangle normally
+copy whitout destroying
+
+% ---- Lisp Evaluation ---------------------------------------------------------
+
+M-:       : evaluate elisp expression in minibuffers
+C-x C-e   : evaluate elisp expression before point
+    preceded by C-u: print in minibuffer
+
+M-x eval-region
+M-x eval-buffer
+
+M-x byte-compile-file
+
+% ---- Dired -------------------------------------------------------------------
+
+n       : next file
+p       : previous file
+j       : jump to file
+C-s     : search file
+d       : flag for deletion and move to next line
+u       : unflag
+back    : move to previous line and unflag/unmark it
+x       : delete flagged files
+f       : visit file
+o       : visit file in new window then select it
+a       : visit file in same buffer
+C-o     : visit file in new window
+^       : parent folder
+g       : update buffer
+
+#       : flag auto-save files
+~       : flag backup files
+.       : flag backup files excepted oldest and newest
+% &     : flag easily remakable files
+% d     : flag files matching regexp
+
+* m     : mark with *
+* *     : mark executables
+* /     : mark directories
+* s     : mark all files
+% m     : mark files matching regexp
+% g     : mark files whose content match regexp
+* u     : remove any mark
+U       : remove all marks
+* ?     : remove marks of char (prompt)
+
+* C-n   : moves to next marked file
+t       : toggle marks (invert selection)
+
++       : create new folder
+C       : copy file to
+R       : rename / move file
+
+C-c C-c : copy file
+C-c C-y : paste file
+C-c C-w : cut file (need buffer udate)
+
+% ---- Format ------------------------------------------------------------------
+
+M-x list-coding-systems
+C-x RET f : file format for saving and revisiting (eg dos/unix/utf-8-unix)
+C-x RET r : revisit file with given file format
+
+% ---- Oz ----------------------------------------------------------------------
+
+C-. C-b : feed buffer
+C-. C-r : feed region
+C-. C-l : feed line
+C-. n   : new oz buffer
+C-. h   : halt oz
+C-. r   : run oz
+
+oz-compile-file
+
+% ---- Code --------------------------------------------------------------------
+
+M-;     : comment you want
+C-c C-c : comment region (C)
+C-c ;   : comment region (asm)
+
+% ---- C -----------------------------------------------------------------------
+
+C-c C-c : comment region
+C-c C-s : syntactic analysis
+C-c C-l : disable electric indentation (auto-reindent on certain characters)
+
+% ---- Indenting ---------------------------------------------------------------
+
+C-q TAB : insert a tab character('\t')
+M-i     : insert whitespace before point to push it to next tab stop
+
+M-x untabify : replace all '\t' in region by spaces
+
+C-u nb C-x TAB : indent the region by nb characters (default 1)
+
+% ---- Find --------------------------------------------------------------------
+
+C-s   : search forward (or repeat)
+C-r   : search backward (or repeat)
+C-M-s : search regexp (use previous commands to repeat)
+M-s o : open a buffer with a copy of line where regexp occurs
+C-w (after C-s) : append word at point to minibuffer
+
+replace-string
+query-replace           (M-%)
+query-replace-regexp    (C-M-%)
+
+M-x occur       : find all occurences of regexp in current buffer
+M-x multi-occur : idem but specify a list of buffers
+M-x multi-occur-in-matching-buffers : idem but buffers matching regexp
+in occur buffer:
+    r : rename to insert search file name
+    g : re-run
+
+% ---- Text --------------------------------------------------------------------
+
+M-u : next word (or end of current) to uppercase
+M-l : next word (or end of current) to lowercase
+
+C-x C-u : region to uppercase
+C-x C-u : region to lowercase
+
+C-x f   : set fill-column (text wrapping)
+M-q     : fill paragraph (wrap paragraph)
+C-c q   : toggle auto-fill-mode (automatic text wrapping)
+M-o M-s : center text
+
+M-x fill-region : fill region (sometimes useful when M-q is not working)
+
+% --- Registers & Bookmarks ----------------------------------------------------
+
+C-x r space <r> : save pos to register
+C-x r j <r>     : goto to pos in register / restore frame configuration / file
+C-x r s <r>     : copy region in register
+C-x r r <r>     : copy rectangle in register
+C-x r i <r>     : insert text from register
+C-x r w <r>     : save frame configuration
+C-x r f <r>     : save all frame configuration
+
+C-u <num> C-x r n <r> : copy number to register
+C-u <num> C-x r + <r> : increment register by number
+
+C-x r m         : set a bookmark at point
+C-x r b         : jump to bookmark
+C-x r l         : list all bookmarks
+M-x bookmark-delete : delete a bookmark
+
+% --- Auto-Completion and Abbrevs ----------------------------------------------
+
+M-/     : autocomplete, latest words first (repeatable to alternate)
+C-M-/   : insert common part of autocompletion or show a list of candidates
+
+C-u <num> C-x a g : define <num> words before point (or region if 0) as expansio
+                    of a global abbrev
+C-u <num> C-x a l : idem but global-mode-specific abbrev
+C-x a e : expand abbrev
+M-'     : separate prefix from abbrev to be expanded
+
+M-x abbrev-mode         : in abbrev-mode, abbrevs are expanded on whitespace
+M-x list-abbrevs
+M-x edit-abbrevs
+M-x kill-all-abbrevs
+(var: abbrev-file-name)
+
+% ---- Auctex ------------------------------------------------------------------
+
+C-c C-c     : run command   (mine change to be C-c C-n)
+  (TeX-command-master)
+C-c C-t C-p : TeX-PDF-mode
+C-c C-q     : format bibtex entry
+
+% ---- Bash --------------------------------------------------------------------
+
+set -o emacs : enables emacs mode in bash (active by default)
+see bash.txt
+
+% ---- Printing ----------------------------------------------------------------
+
+M-x ps-print-...
+M-x ps-print-customize
+
+% ------------------------------------------------------------------------------
+
+ELPA
+
+M-x lacarte-e-m : execute menu command
+M-x des-un-keys : describe unbound keys (use complexity <= 5)

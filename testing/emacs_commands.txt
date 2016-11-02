@@ -1,0 +1,26 @@
+
+emacsclientw.exe -e (find-file "emacs.bat")(split-window-vertically)(find-file "emacs2.bat")
+
+emacsclientw.exe -e "(find-file \"emacs.bat\")(split-window-vertically)(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")(split-window-vertically)(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")(split-window-vertically)(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "((find-file \"emacs.bat\")(split-window-vertically)(find-file \"emacs2.bat\"))"
+
+emacsclientw.exe -c -e "((find-file \"emacs.bat\")(split-window-vertically)(find-file \"emacs2.bat\"))"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(split-window-vertically)" -e "(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(split-window-vertically)" -e "(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(split-window-vertically)" -e "(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(split-window-horizontally)" -e "(find-file \"emacs2.bat\")
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(ediff-current-file)" -e "(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(new-frame)" -e "(find-file \"emacs2.bat\")"
+
+emacsclientw.exe -c -e "(find-file \"emacs.bat\")" -e "(ediff-current-file)" -e "(find-file \"emacs2.bat\")"
