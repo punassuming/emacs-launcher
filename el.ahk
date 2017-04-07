@@ -1,8 +1,24 @@
 ; Emacs Launcher
 ; author : Rich Alesi
-; manage server creation and emacsclient issues in windows
-; wait to load file until server started
-; allow command line arguments to work from shell
+/*
+Application to help manage server creation and emacsclient issues in ms-windows.
+
+Features:
+- wait to load file until server starts
+- allow command line arguments to work from shell
+- open daemon without showing window (autostart)
+*/
+
+;; Script settings
+OnExit, Exit
+SetBatchLines, -1
+SetTitleMatchMode, 3
+SetTitleMatchMode, fast
+SetWinDelay, 10
+#NoEnv
+; #SingleInstance force
+; #Warn                         ; Enable warnings to assist with detecting common errors.
+; #WinActivateForce
 
 files=
 func=
@@ -10,6 +26,7 @@ prefix=
 suffix=
 mode=
 emacs_path=
+emacs_bin_path=
 
 /*
 EnvGet, old_path, Original_Path
@@ -27,20 +44,24 @@ Loop, Parse, bin_path, `;
 {
   If FileExist(A_LoopField . "\emacs.exe")
     {
-    emacs_path = %A_LoopField%
+    emacs_bin_path = %A_LoopField%
     Break
   }
 }
 
-EnvGet, emacs_path, EmacsPath
-
-If (emacs_path=) {
-  MsgBox Set environment variable "EmacsPath" to root directory of your emacs installation, or add emacs binary directory to "PATH"
-  ExitApp
+If (emacs_bin_path=) {
+  EnvGet, emacs_path, EmacsPath
+  If (emacs_path=) {
+    MsgBox Set environment variable "EmacsPath" to root directory of your emacs installation, or add emacs binary directory to "PATH"
+    ExitApp
+  }
+  else {
+      emacs_bin_path = %A_LoopField%\bin
+  }
 }
 
-client=\bin\emacsclientw.exe
-server=\bin\runemacs.exe
+client_bin=%emacs_bin_path%\bin\emacsclientw.exe
+server_bin=%emacs_bin_path%\bin\runemacs.exe
 
 ; TODO work with files with SPACES
 ; TODO deal with Emacs instances that aren't runing servers
@@ -116,15 +137,8 @@ ExitApp
     mode=ediff3
 }
 
-; if messing with multiple files, make a new frame.
-; if (filecount > 1)
-;   command=(select-frame-set-input-focus (make-frame)) %command%
-
 if command!=
   command=-e "(progn %command%)"
-
-; MsgBox % arglist
-; ExitApp
 
 ; MsgBox %0% and filecount is %filecount%
 Process, wait, emacs.exe, 1
@@ -146,10 +160,10 @@ if (NewPID == 0) {
   Tooltip, Starting Emacs...
 
   
-  Run %emacs_path%%client% -n -c -a %emacs_path%%server%
-  ; Run cmd.exe /c "set path=%path%;%emacs_path%%client% -n -c -a %emacs_path%%server%"
+  Run %client_bin% -n -c -a %server_bin%
+  ; Run cmd.exe /c "set path=%path%;%client_bin% -n -c -a %server_bin%"
 
-  WinWait, ahk_class Emacs
+  WinWait, ahk_class Emacs, , 60
 
   ; Continuous
   started=
@@ -164,52 +178,42 @@ if (NewPID == 0) {
   }
 }
 
-; clear tooltip
-Tooltip
-
-; MsgBox %prefix% %command% %suffix%
-
 ; create new window if one doesn't exist
 If not WinExist("ahk_class Emacs")
 {
   If (func=-e "(make-frame)")
     func=
 
-  Run %emacs_path%%client% -c -n %prefix%
+  Run %client_bin% -c -n %prefix%
 }
 
-WinWait, ahk_class Emacs
+WinWait, ahk_class Emacs, , 60
 WinActivate, ahk_class Emacs
-
-; if not WinExist("ahk_class Emacs")
-; prefix = -c %prefix%
-; MsgBox, %prefix% %command% %suffix%
 
 ; If no command line arguments, just bring window to front, or create new window
 If (filecount == 0) {
   If (prefix or suffix)
-    Run %emacs_path%%client% -n %prefix% %suffix%
+    Run %client_bin% -n %prefix% %suffix%
   ExitApp
 }
-
-; MsgBox, Got to next point
-; MsgBox %prefix% %command% %suffix%
 
 ; Open file or launch mode
 if (mode) {
-  ; MsgBox "mode"
-Run %emacs_path%%client% %prefix% -e "(%mode% %files%)"
+Run %client_bin% %prefix% -e "(%mode% %files%)"
 }
 else {
-  ; MsgBox "command"
-  Run %emacs_path%%client% %prefix% %command% %suffix%
+  Run %client_bin% %prefix% %command% %suffix%
 }
-
-; WinActivate, ahk_class Emacs
 
 Exit:
   ExitApp
+  Tooltip, off
   Return
+
+
+#ESCAPE::
+  ExitApp
+  return
 
 Help:
   message =
@@ -244,15 +248,17 @@ Glob(ByRef list, Pattern, IncludeDirs=0)
     list .= (list="" ? "" : "`n") . A_LoopFileLongPath
 }
 
-FindFile(param) {
-  ; MsgBox %param% exists as a file
+FindFile(fparam) {
+  ; MsgBox %fparam% exists as a file
   ;; if path not specified
-  if RegExMatch(param, "\\") == 0
-    param = %A_WorkingDir%\%param%
+  if RegExMatch(fparam, "\\") == 0
+    fparam = %A_WorkingDir%\%fparam%
   
   ;; convert path to unix delimiters
-  param := RegExReplace(param, "\\", "/")
+  fparam := RegExReplace(fparam, "\\", "/")
 
-  command=(find-file \"%param%\")
-  return % command
+  find_command=(find-file \"%fparam%\")
+  return % find_command
 }
+
+
